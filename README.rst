@@ -25,13 +25,14 @@ model file is required to run the data validator.
 Schema / Format
 ---------------
 
-The JSON model format is documented in the `OpenSpending system documentation 
-<http://readthedocs.org/docs/openspending/en/latest/model/design.html#modeling-mapping-schema>`.
+The JSON model format is described in further detail in the documentation_.
+
+.. _documentation: http://readthedocs.org/docs/openspending/en/latest/model/design.html#modeling-mapping-schema
 
 Contact
 -------
 
-E-Mail: info@openspending.org
-Issues: https://github.com/okfn/openspending/issues
+* E-Mail: info@openspending.org
+* Issues: https://github.com/okfn/openspending/issues
 
 
