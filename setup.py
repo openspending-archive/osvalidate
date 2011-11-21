@@ -28,7 +28,7 @@ setup(
     zip_safe=True,
     entry_points={
         'console_scripts': [
-            'osvalidate = openspending.validation:main'
+            'osvalidate = openspending.validationcli:main'
         ]
     }
 )
