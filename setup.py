@@ -21,9 +21,10 @@ setup(
         "nose==1.1.2"
     ],
     license='GPLv3',
-    packages=find_packages(exclude=['ez_setup', 'examples', 'test']),
+    packages=find_packages(exclude=['ez_setup', 'examples', 'validationtest']),
     include_package_data=True,
-    namespace_packages = ['openspending', 'openspending.validation'],
+    namespace_packages = ['openspending', 'openspending.validation',
+       'openspending.validationtest', 'openspending.validationcli'],
     test_suite='nose.collector',
     zip_safe=True,
     entry_points={
