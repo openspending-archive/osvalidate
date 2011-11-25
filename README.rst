@@ -22,6 +22,18 @@ Both commands will emit error messages whenever they find an inconsistency
 but otherwise try to continue the validation. Note, however, that a valid
 model file is required to run the data validator.
 
+
+Upgrading the Format
+--------------------
+
+The model schema changes from time to time, so a migration option is 
+provided so that existing files can be upgraded::
+
+  osvalidate migrate old.json >new.json 
+
+This will attempt to execute pending migrations and set an appropriate 
+model version.
+
 Schema / Format
 ---------------
 

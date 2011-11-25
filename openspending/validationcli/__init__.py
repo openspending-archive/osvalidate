@@ -4,6 +4,7 @@ import json
 from colander import Invalid
 
 from openspending.validation.model import validate_model
+from openspending.validation.model.migration import migrate_model
 from openspending.validation.data import convert_types
 from openspending.validationcli.udr import UnicodeDictReader
 
@@ -30,6 +31,13 @@ def model(args):
     if model is None:
         return 1
     print "OK: data model is valid."
+    return 0
+
+def migrate(args):
+    fh = open(args.json_file, 'rb')
+    model = json.load(fh)
+    model = migrate_model(model)
+    print json.dumps(model, indent=2, encoding='utf-8')
     return 0
 
 def data(args):
@@ -66,6 +74,13 @@ model_parser = parsers.add_parser('model',
                     description='This will validate the model is valid.')
 model_parser.add_argument('json_file', help="JSON model document.")
 model_parser.set_defaults(func=model)
+
+migrate_parser = parsers.add_parser('migrate',
+                    help='Migrate a JSON model file to the latest schema',
+                    description="This will attempt to update the model to " \
+                        "the current schema.")
+migrate_parser.add_argument('json_file', help="JSON model document.")
+migrate_parser.set_defaults(func=migrate)
 
 data_parser = parsers.add_parser('data',
                     help='Parse a CSV file according to the specified JSON model.',
