@@ -4,6 +4,8 @@ from openspending.validation.model.dataset import dataset_schema
 from openspending.validation.model.mapping import mapping_schema
 from openspending.validation.model.views import views_schema
 
+from colander import Invalid
+
 def model_schema(state):
     schema = mapping_node('model')
     schema.add(dataset_schema(state))
