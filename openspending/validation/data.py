@@ -97,8 +97,7 @@ class IdentifierAttributeType(StringAttributeType):
         if not len(value):
             if meta.get('constant'):
                 return meta.get('constant')
-            raise ValueError("Value for identifier attribute is empty: %r" %
-                    meta)
+            raise ValueError("Value for identifier attribute is empty")
         return slugify(value)
 
 class FloatAttributeType(AttributeType):
@@ -113,7 +112,7 @@ class FloatAttributeType(AttributeType):
             raise ValueError("Column is empty")
         if not self.RE.match(value):
             raise ValueError("Numbers must only contain digits, periods, "
-                             "dashes and commas: '%s'" % value)
+                             "dashes and commas")
         return float(unicode(value).replace(",", ""))
 
 
