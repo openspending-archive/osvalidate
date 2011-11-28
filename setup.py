@@ -15,7 +15,7 @@ setup(
     install_requires=[
         "colander==0.9.3",
         "Unidecode==0.04.9",
-        "messytables==0.1.2"
+        "messytables==0.1.3"
     ],
     setup_requires=[
         "nose==1.1.2"

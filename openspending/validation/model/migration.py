@@ -12,7 +12,7 @@ def migrate_model(model):
 
 def m2011_11_20_require_name_attribute(model):
     # https://github.com/okfn/openspending/issues/209
-    for name, meta in model['mapping'].items():
+    for name, meta in model.get('mapping', {}).items():
         label_column = None
         label_default = None
         has_name = False
@@ -54,14 +54,14 @@ def m2011_11_21_normalize_types(model):
             meta['type'] = 'attribute'
         return meta
 
-    for name, meta in model['mapping'].items():
+    for name, meta in model.get('mapping', {}).items():
         type_ = meta.get('type', '').lower().strip()
         meta['type'] = type_
         model['mapping'][name] = _tf(name, meta, type_)
     return model
 
 def m2011_11_22_unique_keys(model):
-    if 'unique_keys' in model['dataset']:
+    if 'unique_keys' in model.get('dataset', {}):
         for key in model['dataset']['unique_keys']:
             key = key.split('.')[0]
             if key in model['mapping']:
