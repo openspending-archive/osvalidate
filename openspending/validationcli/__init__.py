@@ -1,11 +1,7 @@
 import argparse
 import sys
 import json
-from colander import Invalid
 
-from openspending.validation.model import validate_model
-from openspending.validation.model.migration import migrate_model
-from openspending.validation.data import convert_types
 from openspending.validationcli.udr import UnicodeDictReader
 
 DESCRIPTION = "Validation tools for local checks of OpenSpending " \
@@ -15,6 +11,8 @@ parsers = parser.add_subparsers(title='Validators')
 
 
 def _validate_model(file_name):
+    from colander import Invalid
+    from openspending.validation.model import validate_model
     try:
         fh = open(file_name, 'rb')
         model = json.load(fh)
@@ -34,6 +32,7 @@ def model(args):
     return 0
 
 def migrate(args):
+    from openspending.validation.model.migration import migrate_model
     fh = open(args.json_file, 'rb')
     model = json.load(fh)
     model = migrate_model(model)
@@ -41,6 +40,8 @@ def migrate(args):
     return 0
 
 def data(args):
+    from colander import Invalid
+    from openspending.validation.data import convert_types
     return_code = 0
     model = _validate_model(args.model)
     if model is None:
