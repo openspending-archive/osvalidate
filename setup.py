@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='osvalidate',
-    version='2011-11-28.02',
+    version='2011-11-28.03',
     description='OpenSpending Model/Data Validation',
     author='Open Knowledge Foundation',
     author_email='openspending-dev at lists okfn org',
@@ -12,7 +12,7 @@ setup(
         "iso8601",
         "colander==0.9.3",
         "Unidecode==0.04.9",
-        "messytables==0.1.3"
+        "messytables==0.1.4"
     ],
     setup_requires=[
         "nose==1.1.2"
