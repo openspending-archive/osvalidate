@@ -97,6 +97,8 @@ class FloatAttributeType(AttributeType):
 
     def cast(self, row, meta):
         value = self._column_or_default(row, meta, not_null=True)
+        if value is None or not len(value.strip()):
+            raise ValueError("Numeric fields may not be empty.")
         if not self.RE.match(value):
             raise ValueError("Numbers must only contain digits, periods, "
                              "dashes and commas")
