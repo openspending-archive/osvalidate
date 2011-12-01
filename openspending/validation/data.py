@@ -46,7 +46,7 @@ class AttributeType(object):
     def _column_name(self, meta):
         return meta.get('column')
 
-    def _column_or_default(self, row, meta):
+    def _column_or_default(self, row, meta, not_null=False):
         """ Utility function to handle using either the column 
         field or the default value specified. """
         column_name = self._column_name(meta)
@@ -56,6 +56,8 @@ class AttributeType(object):
         value = row.get(column_name)
         if not value and meta.get('default_value', '').strip():
             value = meta.get('default_value').strip()
+        if not_null and value is None:
+            raise ValueError("Column is empty")
         return value
 
     def __eq__(self, other):
@@ -67,25 +69,12 @@ class AttributeType(object):
     def __repr__(self):
         return self.__class__.__name__.rsplit('Type', 1)[0]
 
-class ConstantAttributeType(AttributeType):
-    """ Constant values come from the model rather than from 
-    the actual source data. """
-
-    def _column_name(self, meta):
-        return '<constant>'
-
-    def cast(self, row, meta):
-        if not meta.get('constant'):
-            raise ValueError('Attribute with type "constant" has an empty'
-                    'constant value.')
-        return meta.get('constant')
-
 class StringAttributeType(AttributeType):
     """ Test if the given values can be represented as a 
     string. """
 
     def cast(self, row, meta):
-        value = self._column_or_default(row, meta)
+        value = self._column_or_default(row, meta, not_null=True)
         return unicode(value)
 
 class IdentifierAttributeType(StringAttributeType):
@@ -93,7 +82,7 @@ class IdentifierAttributeType(StringAttributeType):
     converted to a URI-compatible representation. """
 
     def cast(self, row, meta):
-        value = self._column_or_default(row, meta)
+        value = self._column_or_default(row, meta, not_null=True)
         if not len(value):
             if meta.get('constant'):
                 return meta.get('constant')
@@ -107,9 +96,7 @@ class FloatAttributeType(AttributeType):
     RE = re.compile(r'^[0-9-\,]*(\.[0-9Ee]*)?$')
 
     def cast(self, row, meta):
-        value = self._column_or_default(row, meta)
-        if value is None:
-            raise ValueError("Column is empty")
+        value = self._column_or_default(row, meta, not_null=True)
         if not self.RE.match(value):
             raise ValueError("Numbers must only contain digits, periods, "
                              "dashes and commas")
@@ -153,7 +140,6 @@ class DateAttributeType(AttributeType):
 
 
 ATTRIBUTE_TYPES = {
-    'constant': ConstantAttributeType(),
     'string': StringAttributeType(),
     'id': IdentifierAttributeType(),
     'float': FloatAttributeType(),
