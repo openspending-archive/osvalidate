@@ -41,6 +41,16 @@ The JSON model format is described in further detail in the documentation_.
 
 .. _documentation: http://readthedocs.org/docs/openspending/en/latest/model/design.html#modeling-mapping-schema
 
+Installation
+------------
+
+Installation is as a conventional Python tool:
+
+  virtualenv --no-site-packages pyenv
+  . pyenv/bin/activate
+  python setup.py install
+
+
 Contact
 -------
 
