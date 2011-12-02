@@ -41,6 +41,11 @@ The JSON model format is described in further detail in the documentation_.
 
 .. _documentation: http://readthedocs.org/docs/openspending/en/latest/model/design.html#modeling-mapping-schema
 
+You can generate a bare mapping from a JSON model file using:
+
+  osvalidate mapping mymodel.json
+
+
 Installation
 ------------
 

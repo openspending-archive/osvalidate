@@ -24,6 +24,12 @@ def _validate_model(file_name):
     except Exception as ex:
         print unicode(ex).encode('utf-8')
 
+def mapping(args):
+    with file(args.json_file) as fh:
+        data = json.load(fh)
+        print json.dumps(data["mapping"], indent=2)
+    return 0
+
 def model(args):
     model = _validate_model(args.json_file)
     if model is None:
@@ -75,6 +81,14 @@ model_parser = parsers.add_parser('model',
                     description='This will validate the model is valid.')
 model_parser.add_argument('json_file', help="JSON model document.")
 model_parser.set_defaults(func=model)
+
+
+mapping_parser = parsers.add_parser('mapping',
+                    help='Extract the mapping from a JSON model file',
+                    description='This will extract the mapping stanza from the model.')
+mapping_parser.add_argument('json_file', help="JSON model document.")
+mapping_parser.set_defaults(func=mapping)
+                    
 
 migrate_parser = parsers.add_parser('migrate',
                     help='Migrate a JSON model file to the latest schema',
