@@ -47,7 +47,9 @@ Installation
 Installation is as a conventional Python tool:
 
   virtualenv --no-site-packages pyenv
+
   . pyenv/bin/activate
+
   python setup.py install
 
 
