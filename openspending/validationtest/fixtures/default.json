@@ -3,7 +3,8 @@
     "name": "test",
     "label": "Test Dataset", 
     "description": "This is a test dataset",
-    "currency": "EUR"
+    "currency": "EUR",
+    "ckan_uri": "urn:/dev/null"
   },
   "mapping": {
     "amount": {

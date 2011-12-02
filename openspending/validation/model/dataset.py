@@ -34,6 +34,7 @@ def dataset_schema(state):
     schema.add(key('description', validator=chained(
             nonempty_string,
         )))
+    schema.add(key('ckan_uri', missing=None))
     return schema
 
 
