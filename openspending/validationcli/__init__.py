@@ -30,6 +30,11 @@ def mapping(args):
         print json.dumps(data["mapping"], indent=2)
     return 0
 
+def mapping_gen(args):
+    from openspending.validation.model import mapping
+    mapping.dump_mapping(args.csv_file)
+    return 0
+
 def model(args):
     model = _validate_model(args.json_file)
     if model is None:
@@ -88,7 +93,14 @@ mapping_parser = parsers.add_parser('mapping',
                     description='This will extract the mapping stanza from the model.')
 mapping_parser.add_argument('json_file', help="JSON model document.")
 mapping_parser.set_defaults(func=mapping)
-                    
+
+
+mapgen_parser = parsers.add_parser('mapgen',
+                    help='Generate the mapping from a CSV data file',
+                    description='This will (attempt to) generate the mapping stanza from the CSV file.')
+mapgen_parser.add_argument('csv_file', help="CSV data file.")
+mapgen_parser.set_defaults(func=mapping_gen)
+
 
 migrate_parser = parsers.add_parser('migrate',
                     help='Migrate a JSON model file to the latest schema',

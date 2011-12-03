@@ -45,6 +45,15 @@ You can generate a bare mapping from a JSON model file using::
 
   osvalidate mapping mymodel.json
 
+If you don't have a JSON model file, you can generate one from a CSV file
+as follows::
+
+  osvalidate mapgen data.csv
+
+You will need to edit the result of this to add information (like textual
+explanations of the fields) can't be programmatically inferred from the
+contents of the CSV file.
+
 
 Installation
 ------------
