@@ -66,6 +66,18 @@ Installation is as a conventional Python tool::
 
   python setup.py install
 
+Developer notes
+---------------
+
+Each new version of ``osvalidate`` needs to be published in a few steps:
+
+* Update the version in ``setup.py`` to a new release of the form
+  ``YYYY-MM-DD.SS`` with the last two digits signifying a serial number for the
+  day.
+* Commit and push the new release to the GitHub repository.
+* Upload a source distribution to pypi (``python setup.py sdist upload``).
+* Update the required version of ``osvalidate`` in the main ``openspending``
+  app.
 
 Contact
 -------
