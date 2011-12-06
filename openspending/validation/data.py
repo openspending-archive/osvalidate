@@ -46,7 +46,7 @@ class AttributeType(object):
     def _column_name(self, meta):
         return meta.get('column')
 
-    def _column_or_default(self, row, meta, not_null=False):
+    def _column_or_default(self, row, meta):
         """ Utility function to handle using either the column 
         field or the default value specified. """
         column_name = self._column_name(meta)
@@ -54,10 +54,10 @@ class AttributeType(object):
             raise ValueError("Column '%s' does not exist in source data." %
                     column_name)
         value = row.get(column_name)
-        if value is None or len(value.strip()) == 0:
-            if len(meta.get('default_value', '').strip()):
-                value = meta.get('default_value').strip()
-            elif not_null:
+        if (value is None) or not len(value.strip()):
+            if meta.get('default_value') is not None:
+                value = meta.get('default_value')
+            else:
                 raise ValueError("Column is empty")
         return value
 
@@ -75,7 +75,7 @@ class StringAttributeType(AttributeType):
     string. """
 
     def cast(self, row, meta):
-        value = self._column_or_default(row, meta, not_null=True)
+        value = self._column_or_default(row, meta)
         return unicode(value)
 
 class IdentifierAttributeType(StringAttributeType):
@@ -83,11 +83,7 @@ class IdentifierAttributeType(StringAttributeType):
     converted to a URI-compatible representation. """
 
     def cast(self, row, meta):
-        value = self._column_or_default(row, meta, not_null=True)
-        if not len(value):
-            if meta.get('constant'):
-                return meta.get('constant')
-            raise ValueError("Value for identifier attribute is empty")
+        value = self._column_or_default(row, meta)
         return slugify(value)
 
 class FloatAttributeType(AttributeType):
@@ -97,9 +93,7 @@ class FloatAttributeType(AttributeType):
     RE = re.compile(r'^[0-9-\,]*(\.[0-9Ee]*)?$')
 
     def cast(self, row, meta):
-        value = self._column_or_default(row, meta, not_null=True)
-        if value is None or not len(value.strip()):
-            raise ValueError("Numeric fields may not be empty.")
+        value = self._column_or_default(row, meta)
         if not self.RE.match(value):
             raise ValueError("Numbers must only contain digits, periods, "
                              "dashes and commas")
