@@ -52,5 +52,17 @@ class TestTypes(TestCase):
                   }
         row = {"foo": "2010"}
         out = convert_types(mapping, row)
-        assert out['foo']==datetime.date(2010)
+        assert out['foo']==datetime.date(2010, 1, 1)
+    
+        row = {"foo": "2010-02"}
+        out = convert_types(mapping, row)
+        assert out['foo']==datetime.date(2010, 2, 1)
+        
+        row = {"foo": "2010-02-03"}
+        out = convert_types(mapping, row)
+        assert out['foo']==datetime.date(2010, 2, 3)
+
+        row = {"foo": "2010-02-03Z"}
+        out = convert_types(mapping, row)
+        assert out['foo']==datetime.date(2010, 2, 3)
 
