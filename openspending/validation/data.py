@@ -54,10 +54,11 @@ class AttributeType(object):
             raise ValueError("Column '%s' does not exist in source data." %
                     column_name)
         value = row.get(column_name)
-        if not value and meta.get('default_value', '').strip():
-            value = meta.get('default_value').strip()
-        if not_null and value is None or len(value.strip()) == 0:
-            raise ValueError("Column is empty")
+        if value is None or len(value.strip()) == 0:
+            if len(meta.get('default_value', '').strip()):
+                value = meta.get('default_value').strip()
+            elif not_null:
+                raise ValueError("Column is empty")
         return value
 
     def __eq__(self, other):
@@ -110,21 +111,6 @@ class DateAttributeType(AttributeType):
 
     SUFFIX = ('in the format "yyyy-mm-dd", "yyyy-mm" or "yyyy", '
               'e.g. "2011-12-31".')
-
-    def test(self, row, meta):
-        # version with end_column: https://gist.github.com/1261320
-        try:
-            self.cast(row, meta)
-            return True
-        except ValueError:
-            try:
-                value = unicode(self._column_or_default(row, meta))
-            except ValueError, ve:
-                return unicode(ve)
-            if meta['dimension'] != 'time':
-                return '"%s" can be empty or a value %s' % (
-                        meta.get('column'), self.SUFFIX)
-            return '"time" (here "%s") has to be %s.' % (value, self.SUFFIX)
 
     def cast(self, row, meta):
         value = unicode(self._column_or_default(row, meta))
