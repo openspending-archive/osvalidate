@@ -56,7 +56,7 @@ class AttributeType(object):
         value = row.get(column_name)
         if not value and meta.get('default_value', '').strip():
             value = meta.get('default_value').strip()
-        if not_null and value is None:
+        if not_null and value is None or len(value.strip()) == 0:
             raise ValueError("Column is empty")
         return value
 
