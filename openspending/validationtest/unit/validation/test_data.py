@@ -1,3 +1,5 @@
+import datetime
+
 from ... import TestCase, helpers as h
 from openspending.validation.data import convert_types
 
@@ -42,4 +44,13 @@ class TestTypes(TestCase):
         assert isinstance(out, dict), out
         assert 'foo' in out, out
         assert out['foo']==5.0
+
+    def test_convert_dates(self):
+        mapping = {
+                    "foo": {"column": "foo", 
+                           "datatype": "date"}
+                  }
+        row = {"foo": "2010"}
+        out = convert_types(mapping, row)
+        assert out['foo']==datetime.date(2010)
 

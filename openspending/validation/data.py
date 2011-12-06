@@ -107,7 +107,7 @@ class FloatAttributeType(AttributeType):
 
 class DateAttributeType(AttributeType):
     """ Date parsing. """
-    # TODO: simplify this, its hell!
+
     SUFFIX = ('in the format "yyyy-mm-dd", "yyyy-mm" or "yyyy", '
               'e.g. "2011-12-31".')
 
@@ -122,8 +122,6 @@ class DateAttributeType(AttributeType):
             except ValueError, ve:
                 return unicode(ve)
             if meta['dimension'] != 'time':
-                #if not value:
-                #    return True
                 return '"%s" can be empty or a value %s' % (
                         meta.get('column'), self.SUFFIX)
             return '"time" (here "%s") has to be %s.' % (value, self.SUFFIX)
@@ -131,13 +129,10 @@ class DateAttributeType(AttributeType):
     def cast(self, row, meta):
         value = unicode(self._column_or_default(row, meta))
         if value:
-            for format in ["%Y-%m-%d", "%Y-%m", "%Y"]:
+            for format in ["%Y-%m-%dZ", "%Y-%m-%d", "%Y-%m", "%Y"]:
                 try:
                     return datetime.strptime(value, format).date()
                 except ValueError: pass
-        #elif meta['dimension'] != 'time':
-        #    # ugly logic rule #3983:
-        #    return None
         raise ValueError("'%s': invalid date value." % value)
 
 
