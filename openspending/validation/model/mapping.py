@@ -22,8 +22,8 @@ def specific_datatype(type_):
     return _check
 
 def name_wrap(check, name):
-    """ Apply a validator to the curried name variable, not 
-    any of the actual mapping data. """
+    """ Apply a validator to the name variable, not any of 
+    the actual mapping data. """
     def _check(value):
         return check(name)
     return _check
@@ -76,28 +76,25 @@ def require_amount_dimension(mapping):
                 "(i.e. 'float') to be a valid measure."
     return True
 
-def compound_attribute_name_is_id_type(attribute):
+def compound_attribute_name_is_id_type(attributes):
     """ Whenever a compound dimension has a name attribute, this
     attribute must be munged, i.e. be of type 'id'. """
-    if attribute.get('name') == 'name' and \
-            attribute.get('datatype') != 'id':
+    if attributes.get('name', {}).get('datatype') != 'id':
         return "'name' attributes on dimensions must be of the " \
                 "data type 'id' so they can be used in URLs"
     return True
 
-def compound_attribute_label_is_string_type(attribute):
+def compound_attribute_label_is_string_type(attributes):
     """ Whenever a compound dimension has a label attribute, this
     attribute will be used in the UI and must be of type 'string'. 
     """
-    if attribute.get('name') == 'label' and \
-            attribute.get('datatype') != 'string':
+    if attributes.get('label', {}).get('datatype') != 'string':
         return "'label' attributes on dimensions must be of the " \
                 "data type 'string' so they can be used in the UI."
     return True
 
 def compound_attributes_include_name(attributes):
     """ Each compound dimension must have a 'name' attribute. """
-    attributes = [a.get('name') for a in attributes]
     if not 'name' in attributes:
         return "Compound dimensions must have a 'name' attribute " \
                 "that uniquely identifies them in the data. The " \
@@ -106,7 +103,6 @@ def compound_attributes_include_name(attributes):
 
 def compound_attributes_include_label(attributes):
     """ Each compound dimension must have a 'label' attribute. """
-    attributes = [a.get('name') for a in attributes]
     if not 'label' in attributes:
         return "Compound dimensions must have a 'label' attribute " \
                 "that will be used to describe them in the " \
@@ -163,16 +159,12 @@ def date_schema(name, state):
         )))
     return schema
 
-def dimension_attribute_schema(state):
-    schema = mapping('field', validator=chained(
-            compound_attribute_name_is_id_type,
-            compound_attribute_label_is_string_type
+def dimension_attribute_schema(name, state):
+    schema = mapping(name, validator=chained(
+        name_wrap(nonempty_string, name),
+        name_wrap(reserved_name, name),
+        name_wrap(database_name, name),
         ))
-    schema.add(key('name', validator=chained(
-            nonempty_string,
-            reserved_name,
-            database_name
-        )))
     schema.add(key('column', validator=chained(
             nonempty_string,
         )))
@@ -184,11 +176,18 @@ def dimension_attribute_schema(state):
 
 def compound_dimension_schema(name, state):
     schema = property_schema(name, state)
-    schema.add(sequence('fields', dimension_attribute_schema(state),
+
+    attributes = mapping('attributes',
         validator=chained(
             compound_attributes_include_name,
-            compound_attributes_include_label
-        )))
+            compound_attributes_include_label,
+            compound_attribute_name_is_id_type,
+            compound_attribute_label_is_string_type
+        ))
+    for attribute in state.dimension_attributes(name):
+        attributes.add(dimension_attribute_schema(attribute, state))
+    schema.add(attributes)
+
     return schema
 
 def mapping_schema(state):
@@ -208,6 +207,8 @@ def mapping_schema(state):
         schema.add(type_schema(name, state))
     return schema
 
+
+# TODO: this should not be here!!!
 
 import pkg_resources
 pkg_resources.require("unidecode")

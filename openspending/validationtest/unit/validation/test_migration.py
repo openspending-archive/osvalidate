@@ -5,7 +5,8 @@ from openspending.validation.model import validate_model
 from openspending.validation.model.migration import \
     m2011_11_20_require_name_attribute, \
     m2011_11_21_normalize_types, \
-    m2011_11_22_unique_keys
+    m2011_11_22_unique_keys, \
+    m2011_12_07_attributes_dictionary
 
 
 class TestMigration(TestCase):
@@ -36,5 +37,13 @@ class TestMigration(TestCase):
         assert not 'unique_keys' in out['dataset']
         assert not 'key' in out['mapping']['supplier']
         assert out['mapping']['function']['key']
+
+    def test_2011_12_07_attribute_dicts(self):
+        model = h.model_fixture('2011_12_07_attribute_dicts')
+        out =  m2011_12_07_attributes_dictionary(model)
+        assert not 'fields' in out['mapping']['function']
+        assert 'attributes' in out['mapping']['function']
+        assert 'datatype' in out['mapping']['function']['attributes']['name']
+        assert 'id'==out['mapping']['function']['attributes']['name']['datatype']
 
 

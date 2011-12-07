@@ -19,8 +19,8 @@ class ValidationState(object):
         """
         for prop, meta in self.mapping_items:
             yield prop
-            for field in meta.get('fields', []):
-                yield prop + '.' + field['name']
+            for attribute in meta.get('attributes', {}).keys():
+                yield prop + '.' + attribute
 
     @property
     def dimensions(self):
@@ -29,6 +29,9 @@ class ValidationState(object):
             if meta['type'].lower() == 'measure':
                 continue
             yield prop
+
+    def dimension_attributes(self, dimension):
+        return self.model['mapping'][dimension].get('attributes', {}).keys()
 
 
 def _node(schema, name, *children, **kw):

@@ -16,7 +16,7 @@ class TestDataset(TestCase):
             ds = self.model['dataset']
             schema = dataset_schema(self.state)
             out = schema.deserialize(ds)
-            assert out.keys()==ds.keys(), out
+            assert sorted(out.keys())==sorted(ds.keys()), [out, ds]
         except Invalid, i:
             assert False, i.asdict()
     

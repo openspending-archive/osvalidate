@@ -69,9 +69,25 @@ def m2011_11_22_unique_keys(model):
         del model['dataset']['unique_keys']
     return model
 
+def m2011_12_07_attributes_dictionary(model):
+    for name, meta in model.get('mapping', {}).items():
+        if ('attributes' not in meta) and ('fields' in meta):
+            meta['attributes'] = {}
+            for field in meta.get('fields', []):
+                if 'name' not in field: 
+                    continue
+                name = field['name']
+                del field['name']
+                meta['attributes'][name] = field
+            del meta['fields']
+        model['mapping'][name] = meta
+    return model
+
+
 MIGRATIONS = {
     '2011-11-20': m2011_11_20_require_name_attribute,
     '2011-11-21': m2011_11_21_normalize_types,
-    '2011-11-22': m2011_11_22_unique_keys
+    '2011-11-22': m2011_11_22_unique_keys,
+    '2011-12-07': m2011_12_07_attributes_dictionary,
     }
 

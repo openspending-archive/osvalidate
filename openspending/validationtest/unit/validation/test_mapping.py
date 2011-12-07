@@ -124,76 +124,79 @@ class TestMapping(TestCase):
     @h.raises(Invalid)
     def test_compound_has_fields(self):
         ms = self.model['mapping'].copy()
-        del ms['function']['fields']
+        del ms['function']['attributes']
         schema = mapping_schema(self.state)
         schema.deserialize(ms)
     
     @h.raises(Invalid)
     def test_compound_field_has_name(self):
         ms = self.model['mapping'].copy()
-        del ms['function']['fields'][2]['name']
+        del ms['function']['attributes']['name']
         schema = mapping_schema(self.state)
         schema.deserialize(ms)
     
     @h.raises(Invalid)
     def test_compound_field_reserved_name(self):
         ms = self.model['mapping'].copy()
-        ms['function']['fields'][2]['name'] = 'id'
+        ms['function']['attributes']['id'] = ms['function']['attributes']['description']
+        del ms['function']['attributes']['description']
         schema = mapping_schema(self.state)
         schema.deserialize(ms)
     
     @h.raises(Invalid)
     def test_compound_field_invalid_name(self):
         ms = self.model['mapping'].copy()
-        ms['function']['fields'][2]['name'] = 'ba nanan'
+        ms['function']['attributes']['ba nanana'] = ms['function']['attributes']['description']
+        del ms['function']['attributes']['description']
         schema = mapping_schema(self.state)
         schema.deserialize(ms)
     
     @h.raises(Invalid)
     def test_compound_field_has_column(self):
         ms = self.model['mapping'].copy()
-        del ms['function']['fields'][2]['column']
+        del ms['function']['attributes']['description']['column']
         schema = mapping_schema(self.state)
         schema.deserialize(ms)
     
     @h.raises(Invalid)
     def test_compound_field_has_datatype(self):
         ms = self.model['mapping'].copy()
-        del ms['function']['fields'][2]['datatype']
+        del ms['function']['attributes']['description']['datatype']
         schema = mapping_schema(self.state)
         schema.deserialize(ms)
     
     @h.raises(Invalid)
     def test_compound_field_invalid_datatype(self):
         ms = self.model['mapping'].copy()
-        ms['function']['fields'][2]['datatype'] = 'banana'
+        ms['function']['attributes']['description']['datatype'] = 'banana'
         schema = mapping_schema(self.state)
         schema.deserialize(ms)
     
     @h.raises(Invalid)
     def test_compound_field_name_not_datatype_id(self):
         ms = self.model['mapping'].copy()
-        ms['function']['fields'][0]['datatype'] = 'string'
+        ms['function']['attributes']['name']['datatype'] = 'string'
         schema = mapping_schema(self.state)
         schema.deserialize(ms)
     
     @h.raises(Invalid)
     def test_compound_field_label_not_datatype_string(self):
         ms = self.model['mapping'].copy()
-        ms['function']['fields'][1]['datatype'] = 'float'
+        ms['function']['attributes']['label']['datatype'] = 'float'
         schema = mapping_schema(self.state)
         schema.deserialize(ms)
     
     @h.raises(Invalid)
     def test_compound_must_have_name(self):
         ms = self.model['mapping'].copy()
-        del ms['function']['fields'][0]
+        del ms['function']['attributes']['name']
         schema = mapping_schema(self.state)
         schema.deserialize(ms)
 
     @h.raises(Invalid)
     def test_compound_must_have_label(self):
         ms = self.model['mapping'].copy()
-        del ms['function']['fields'][1]
+        del ms['function']['attributes']['label']
         schema = mapping_schema(self.state)
         schema.deserialize(ms)
+

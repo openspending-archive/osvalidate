@@ -4,7 +4,6 @@
     "label": "Test Dataset", 
     "description": "This is a test dataset",
     "currency": "EUR",
-    "schema_version": "2011-12-07",
     "ckan_uri": "urn:/dev/null"
   },
   "mapping": {
@@ -36,19 +35,19 @@
       "type": "compound",
       "key": true,
       "label": "Function", 
-      "attributes": {
-        "name": {"datatype": "id", "column": "FUNCTION_ID"},
-        "label": {"datatype": "string", "column": "FUNCTION"},
-        "description": {"datatype": "string", "column": "FUNCTION_DESC"}
-      }
+      "fields": [
+        {"name": "name", "datatype": "id", "column": "FUNCTION_ID"},
+        {"name": "label", "datatype": "string", "column": "FUNCTION"},
+        {"name": "description", "datatype": "string", "column": "FUNCTION_DESC"}
+      ]
     },
     "supplier": {
       "type": "compound",
       "label": "Supplier", 
-      "attributes": {
-        "name": {"datatype": "id", "column": "SUPPLIER_ID"},
-        "label": {"datatype": "string", "column": "SUPPLIER"}
-      }
+      "fields": [
+        {"name": "name", "datatype": "id", "column": "SUPPLIER_ID"},
+        {"name": "label", "datatype": "string", "column": "SUPPLIER"}
+      ]
     }
   },
   "views": [
@@ -59,7 +58,7 @@
       "drilldown": "function",
       "cuts": {
         "supplier.name": "harry"
-      }
+        }
     },
     {
       "name": "default",
