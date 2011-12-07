@@ -76,9 +76,9 @@ def m2011_12_07_attributes_dictionary(model):
             for field in meta.get('fields', []):
                 if 'name' not in field: 
                     continue
-                name = field['name']
+                name_ = field['name']
                 del field['name']
-                meta['attributes'][name] = field
+                meta['attributes'][name_] = field
             del meta['fields']
         model['mapping'][name] = meta
     return model
