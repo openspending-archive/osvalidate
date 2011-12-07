@@ -160,16 +160,16 @@ def convert_types(mapping, row):
                 out[dimension] = _cast(row, meta, dimension)
             except Invalid, i:
                 errors.add(i)
+
         # handle CompoundDimensions.
         else:
             out[dimension] = {}
 
-            for attribute in meta.get('fields', []):
-                attribute_name = attribute['name']
+            for attribute, ameta in meta.get('attributes', {}).items():
                 try:
-                    out[dimension][attribute_name] = \
-                            _cast(row, attribute, dimension + '.' +
-                                    attribute_name)
+                    out[dimension][attribute] = \
+                            _cast(row, ameta, dimension + '.' +
+                                    attribute)
                 except Invalid, i:
                     errors.add(i)
 

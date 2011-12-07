@@ -18,12 +18,12 @@ class TestTypes(TestCase):
 
     def test_convert_types_compound(self):
         mapping = {
-                    "foo": {"fields": [
-                        {"name": "name", "column": "foo_name", 
+                    "foo": {"attributes": {
+                        "name": {"column": "foo_name", 
                             "datatype": "string"},
-                        {"name": "label", "column": "foo_label", 
+                        "label": {"column": "foo_label", 
                             "datatype": "string"}
-                        ]
+                        }
                     }
                   }
         row = {"foo_name": "bar", "foo_label": "qux"}
