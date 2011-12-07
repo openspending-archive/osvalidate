@@ -1,4 +1,5 @@
 import os
+import csv
 import json
 
 def get_resource(name):
@@ -12,4 +13,10 @@ def get_json(name):
     fh.close()
     return data
 
+def get_csv(name):
+    fh = get_resource(name + '.csv')
+    reader = csv.DictReader(fh)
+    data = list(reader)
+    fh.close()
+    return data
 
