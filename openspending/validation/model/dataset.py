@@ -2,7 +2,7 @@ from openspending.validation.model.common import mapping
 from openspending.validation.model.common import key
 from openspending.validation.model.predicates import chained, \
         reserved_name, database_name, nonempty_string
-from openspending.validation.model.currency import CURRENCIES
+from openspending.reference.currency import CURRENCIES
 
 
 def no_double_underscore(name):

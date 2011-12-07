@@ -20,13 +20,18 @@ setup(
     license='GPLv3',
     packages=find_packages(exclude=['ez_setup', 'examples', 'validationtest']),
     include_package_data=True,
+    package_data={
+        'openspending.reference': ['data/*']
+        },
     namespace_packages = ['openspending', 'openspending.validation',
-       'openspending.validationtest', 'openspending.validationcli'],
+       'openspending.validationtest', 'openspending.validationcli',
+       'openspending.reference'],
     test_suite='nose.collector',
-    zip_safe=True,
+    zip_safe=False,
     entry_points={
         'console_scripts': [
             'osvalidate = openspending.validationcli:main'
         ]
     }
 )
+
