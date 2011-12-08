@@ -153,6 +153,7 @@ def date_schema(name, state):
     schema.add(key('column', validator=chained(
             nonempty_string,
         )))
+    schema.add(key('format', missing=None))
     schema.add(key('datatype', validator=chained(
             nonempty_string,
             specific_datatype('date')

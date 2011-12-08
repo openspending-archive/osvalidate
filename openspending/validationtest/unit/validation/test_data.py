@@ -66,3 +66,12 @@ class TestTypes(TestCase):
         out = convert_types(mapping, row)
         assert out['foo']==datetime.date(2010, 2, 3)
 
+    def test_convert_dates_custom_format(self):
+        mapping = {
+                    "foo": {"column": "foo",
+                            "format": "%d.%m.%Y", 
+                            "datatype": "date"}
+                  }
+        row = {"foo": "7.5.2010"}
+        out = convert_types(mapping, row)
+        assert out['foo']==datetime.date(2010, 5, 7)

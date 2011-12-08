@@ -103,16 +103,19 @@ class FloatAttributeType(AttributeType):
 class DateAttributeType(AttributeType):
     """ Date parsing. """
 
-    SUFFIX = ('in the format "yyyy-mm-dd", "yyyy-mm" or "yyyy", '
-              'e.g. "2011-12-31".')
-
     def cast(self, row, meta):
         value = unicode(self._column_or_default(row, meta))
-        if value:
-            for format in ["%Y-%m-%dZ", "%Y-%m-%d", "%Y-%m", "%Y"]:
-                try:
-                    return datetime.strptime(value, format).date()
-                except ValueError: pass
+        if 'format' in meta and meta['format']:
+            try:
+                return datetime.strptime(value, meta['format']).date()
+            except ValueError:
+                raise ValueError("date does not match the specified format (%s)"
+                        %  meta['format'])
+
+        for format in ["%Y-%m-%dZ", "%Y-%m-%d", "%Y-%m", "%Y"]:
+            try:
+                return datetime.strptime(value, format).date()
+            except ValueError: pass
         raise ValueError("'%s': invalid date value." % value)
 
 
