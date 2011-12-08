@@ -5,6 +5,8 @@
     "description": "This is a test dataset",
     "currency": "EUR",
     "schema_version": "2011-12-07",
+    "languages": ["en"],
+    "territories": ["DE", "FR", "ES"],
     "ckan_uri": "urn:/dev/null"
   },
   "mapping": {

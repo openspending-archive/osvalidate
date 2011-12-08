@@ -1,8 +1,10 @@
 from openspending.validation.model.common import mapping
-from openspending.validation.model.common import key
+from openspending.validation.model.common import key, sequence
 from openspending.validation.model.predicates import chained, \
         reserved_name, database_name, nonempty_string
 from openspending.reference.currency import CURRENCIES
+from openspending.reference.language import LANGUAGES
+from openspending.reference.country import COUNTRIES
 
 
 def no_double_underscore(name):
@@ -15,6 +17,16 @@ def no_double_underscore(name):
 def valid_currency(code):
     if code.upper() not in CURRENCIES:
         return "%s is not a valid currency code." % code
+    return True
+
+def valid_language(code):
+    if code.lower() not in LANGUAGES:
+        return "%s is not a valid language code." % code
+    return True
+
+def valid_country(code):
+    if code.upper() not in COUNTRIES:
+        return "%s is not a valid country code." % code
     return True
 
 def dataset_schema(state):
@@ -34,6 +46,12 @@ def dataset_schema(state):
     schema.add(key('description', validator=chained(
             nonempty_string,
         )))
+    schema.add(sequence('languages',
+        key('language', validator=valid_language), 
+        missing=[]))
+    schema.add(sequence('territories',
+        key('territory', validator=valid_country), 
+        missing=[]))
     schema.add(key('ckan_uri', missing=None))
     return schema
 

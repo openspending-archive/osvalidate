@@ -42,6 +42,20 @@ class TestDataset(TestCase):
         schema.deserialize(ds)
     
     @h.raises(Invalid)
+    def test_invalid_language(self):
+        ds = self.model['dataset'].copy()
+        ds['languages'].append('esperanto')
+        schema = dataset_schema(self.state)
+        schema.deserialize(ds)
+    
+    @h.raises(Invalid)
+    def test_invalid_country(self):
+        ds = self.model['dataset'].copy()
+        ds['territories'].append('SU')
+        schema = dataset_schema(self.state)
+        schema.deserialize(ds)
+    
+    @h.raises(Invalid)
     def test_no_label(self):
         ds = self.model['dataset'].copy()
         del ds['label']
