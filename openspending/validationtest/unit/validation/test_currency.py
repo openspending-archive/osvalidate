@@ -1,5 +1,5 @@
 
-from openspending.validation.model import currency
+from openspending.reference import currency
 from openspending.validation.model.dataset import valid_currency
 
 from ... import TestCase, helpers as h
