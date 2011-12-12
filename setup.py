@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='osvalidate',
-    version='2011-12-08.02',
+    version='2011-12-12.01',
     description='OpenSpending Model/Data Validation',
     author='Open Knowledge Foundation',
     author_email='openspending-dev at lists okfn org',
@@ -18,10 +18,9 @@ setup(
         "nose==1.1.2"
     ],
     license='GPLv3',
-    packages=find_packages(exclude=['ez_setup', 'examples', 'validationtest']),
+    packages=find_packages(exclude=['ez_setup', 'openspending.validationtest']),
     include_package_data=True,
     package_data={
-        'openspending.reference': ['data/*']
         },
     namespace_packages = ['openspending', 'openspending.validation',
        'openspending.validationtest', 'openspending.validationcli',
