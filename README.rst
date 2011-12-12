@@ -79,6 +79,18 @@ Each new version of ``osvalidate`` needs to be published in a few steps:
 * Update the required version of ``osvalidate`` in the main ``openspending``
   app.
 
+How to write a migration - Migrations of model formats are simple functions, 
+usually named ``mYYYY_MM_DD_purpose`` and stored in the ``migrations`` module.
+They must both accept and return a model file and be registered in
+``openspending.validation.model.migration:MIGRATIONS`` with an increasing
+version stamp (i.e. the current date). The version stamp of the latest executed 
+migration will automatically be saved to the model and used as a minimum for 
+the next run. 
+
+In general, migrations should make as few assumptions about the input they 
+receive as possible and execute idempotently. Migrations cannot change the 
+``dataset`` section of the model.
+
 Contact
 -------
 
