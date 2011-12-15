@@ -25,31 +25,20 @@ class AttributeType(object):
     methods to check if a type is applicable to a given value and
     to convert a value to the type. """
 
-    def test(self, row, meta):
-        """ Test if the value is of the given type. The
-        default implementation calls ``cast`` and checks if
-        that throws an exception. If the conversion passes, True
-        is returned. Otherwise, a message is given back. """
-        try:
-            self.cast(row, meta)
-            return True
-        except Exception, e:
-            return unicode(e)
-
-    def cast(self, row, meta):
+    def cast(self, row, mapping, meta):
         """ Convert the value to the type. This may throw
         a quasi-random exception if conversion fails (i.e. it is
         assumed that validation was performed before and errors
         were already handled. """
         raise TypeError("No casting method defined!")
 
-    def _column_name(self, meta):
-        return meta.get('column')
+    def _column_name(self, mapping):
+        return mapping.get('column')
 
-    def _column_or_default(self, row, meta):
+    def _column_or_default(self, row, mapping, meta):
         """ Utility function to handle using either the column 
         field or the default value specified. """
-        column_name = self._column_name(meta)
+        column_name = self._column_name(mapping)
         if not column_name in row:
             raise ValueError("Column '%s' does not exist in source data." %
                     column_name)
@@ -74,16 +63,16 @@ class StringAttributeType(AttributeType):
     """ Test if the given values can be represented as a 
     string. """
 
-    def cast(self, row, meta):
-        value = self._column_or_default(row, meta)
+    def cast(self, row, mapping, meta):
+        value = self._column_or_default(row, mapping, meta)
         return unicode(value)
 
 class IdentifierAttributeType(StringAttributeType):
     """ Type for slug fields, i.e. attributes that will be 
     converted to a URI-compatible representation. """
 
-    def cast(self, row, meta):
-        value = self._column_or_default(row, meta)
+    def cast(self, row, mapping, meta):
+        value = self._column_or_default(row, mapping, meta)
         return slugify(value)
 
 class FloatAttributeType(AttributeType):
@@ -92,8 +81,8 @@ class FloatAttributeType(AttributeType):
 
     RE = re.compile(r'^[0-9-\,]*(\.[0-9Ee]*)?$')
 
-    def cast(self, row, meta):
-        value = self._column_or_default(row, meta)
+    def cast(self, row, mapping, meta):
+        value = self._column_or_default(row, mapping, meta)
         if not self.RE.match(value):
             raise ValueError("Numbers must only contain digits, periods, "
                              "dashes and commas")
@@ -103,8 +92,8 @@ class FloatAttributeType(AttributeType):
 class DateAttributeType(AttributeType):
     """ Date parsing. """
 
-    def cast(self, row, meta):
-        value = unicode(self._column_or_default(row, meta))
+    def cast(self, row, mapping, meta):
+        value = unicode(self._column_or_default(row, mapping, meta))
         if 'format' in meta and meta['format']:
             try:
                 return datetime.strptime(value, meta['format']).date()
@@ -126,24 +115,23 @@ ATTRIBUTE_TYPES = {
     'date': DateAttributeType()
     }
 
-def _cast(row, meta, attribute_name):
+def _cast(row, mapping, meta, attribute_name):
     """ Test if type conversion is possible, otherwise emit an 
     error. """
     datatype = meta['datatype']
     type_ = ATTRIBUTE_TYPES.get(datatype.lower().strip(),
             StringAttributeType())
-    test_result = type_.test(row, meta)
-    if test_result is not True:
+    try:
+        return type_.cast(row, mapping, meta)
+    except Exception, e:
         try:
-            value = type_._column_or_default(row, meta)
+            value = type_._column_or_default(row, mapping, meta)
         except ValueError:
             value = None
-        raise InvalidData(attribute_name, type_._column_name(meta),
-                          datatype, value, test_result)
-    return type_.cast(row, meta)
+        raise InvalidData(attribute_name, type_._column_name(mapping),
+                          datatype, value, unicode(e))
 
-
-def convert_types(mapping, row):
+def convert_types(dimensions, mapping, row):
     """ Translate a row of input data (e.g. from a CSV file) into the
     structure understood by the dataset loader, i.e. where all 
     dimensions are dicts and all types have been converted. 
@@ -153,28 +141,29 @@ def convert_types(mapping, row):
     out = {}
     errors = Invalid(SchemaNode(Mapping(unknown='preserve')))
 
-    for dimension, meta in mapping.items():
+    for dimension, meta in dimensions.items():
         meta['dimension'] = dimension
 
-        # handle AttributeDimensions, Measures and DateDimensions.
-        # this is clever, but possibly not always true.
-        if 'column' in meta:
-            try:
-                out[dimension] = _cast(row, meta, dimension)
-            except Invalid, i:
-                errors.add(i)
-
         # handle CompoundDimensions.
-        else:
+        # this is clever, but possibly not always true.
+        if 'attributes' in meta:
             out[dimension] = {}
-
             for attribute, ameta in meta.get('attributes', {}).items():
+                _mapping_field = dimension + '.' + attribute
+                _mapping = mapping[_mapping_field]
                 try:
                     out[dimension][attribute] = \
-                            _cast(row, ameta, dimension + '.' +
+                            _cast(row, _mapping, ameta, dimension + '.' +
                                     attribute)
                 except Invalid, i:
                     errors.add(i)
+        # handle AttributeDimensions, Measures and DateDimensions.
+        else:
+            mapping = mapping[dimension]
+            try:
+                out[dimension] = _cast(row, mapping, meta, dimension)
+            except Invalid, i:
+                errors.add(i)
 
     if len(errors.children):
         raise errors
