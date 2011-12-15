@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='osvalidate',
-    version='2011-12-12.01',
+    version='2011-12-15.01',
     description='OpenSpending Model/Data Validation',
     author='Open Knowledge Foundation',
     author_email='openspending-dev at lists okfn org',
