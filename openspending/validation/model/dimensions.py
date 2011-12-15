@@ -23,7 +23,7 @@ def specific_datatype(type_):
 
 def name_wrap(check, name):
     """ Apply a validator to the name variable, not any of 
-    the actual mapping data. """
+    the actual dimensions data. """
     def _check(value):
         return check(name)
     return _check
@@ -34,7 +34,7 @@ def no_dimension_id_overlap(name, state):
     a foreign key name on the facts table. """
     def _check(value):
         invalid_name = name + '_id'
-        properties = map(lambda (x,y): x, state.mapping_items)
+        properties = map(lambda (x,y): x, state.dimensions_items)
         if invalid_name in properties:
             return "The names %s and %s_id conflict. Please " \
                     "remove %s_id or rename it." % (name, name, name)
@@ -54,7 +54,7 @@ def require_one_key_column(mapping):
 def require_time_dimension(mapping):
     """ Each mapping needs to have a time dimension. """
     if 'time' not in mapping.keys():
-        return "Mapping does not contain a time dimension." \
+        return "Dimensions set does not contain a time dimension." \
                 "The dimension must exist and contain a date " \
                 "to describe the entry."
     # TODO: in the future, this should check 'type':
@@ -65,9 +65,9 @@ def require_time_dimension(mapping):
     return True
 
 def require_amount_dimension(mapping):
-    """ Each mapping needs to have a amount dimension. """
+    """ Each dimensions set needs to have a amount dimension. """
     if 'amount' not in mapping.keys():
-        return "Mapping does not contain an amount measure." \
+        return "Dimensions set does not contain an amount measure." \
                 "At least this measure must exist and contain " \
                 "the key value of this entry."
     # TODO: in the future, this should check 'type':
@@ -191,13 +191,13 @@ def compound_dimension_schema(name, state):
 
     return schema
 
-def mapping_schema(state):
-    schema = mapping('mapping', validator=chained(
+def dimensions_schema(state):
+    schema = mapping('dimensions', validator=chained(
         require_time_dimension,
         require_amount_dimension,
         require_one_key_column
         ))
-    for name, meta in state.mapping_items:
+    for name, meta in state.dimensions_items:
         type_schema = {
             'measure': measure_schema,
             'value': attribute_dimension_schema,
@@ -209,75 +209,4 @@ def mapping_schema(state):
     return schema
 
 
-# TODO: this should not be here!!!
 
-import pkg_resources
-pkg_resources.require("unidecode")
-pkg_resources.require("messytables")
-
-try:
-    from openspending.lib.util import slugify
-except ImportError:
-    import re
-    from unidecode import unidecode
-    def slugify(text, delimiter='-'):
-        result = []
-        for word in re.split(r'[\t !"#$%&\'()*\-/<=>?@\[\\\]^_`{|},.]+', unicode(text).lower()):
-            result.extend(unidecode(word).split())
-        return unicode(delimiter.join(result))
-
-
-from json import dumps
-from collections import defaultdict
-from messytables import CSVRowSet, type_guess
-
-
-def frequent_values(sample):
-    values = defaultdict(lambda: defaultdict(int))
-    for row in sample:
-        for i, value in enumerate(row):
-            values[i][value.value] += 1
-    sorted_values = []
-    for idx, column in values.items():
-        frequent = sorted(column.items(), key=lambda (v,c): c, reverse=True)
-        sorted_values.append(frequent[:5])
-    return sorted_values
-
-
-def generate_mapping(fileobj, sample=2000):
-    row_set = CSVRowSet('data', fileobj, window=sample)
-    sample = list(row_set.sample)
-    headers, sample = sample[0], sample[1:]
-    values = frequent_values(sample)
-    types = type_guess(sample)
-    mapping = {}
-    for header, type_, value in zip(headers, types, values):
-        type_ = repr(type_).lower()
-        name = slugify(header.value).lower()
-        meta = {
-            'label': header.value,
-            'column': header.value,
-            'common_values': value,
-            'datatype': type_
-            }
-        if type_ in ['decimal', 'integer', 'float']:
-            meta['type'] = 'measure'
-            meta['datatype'] = 'float'
-        elif type_ in ['date']:
-            meta['type'] = 'date'
-            meta['datatype'] = 'date'
-        else:
-            meta['type'] = 'value'
-        mapping[name] = meta
-    return mapping
-
-
-def dump_mapping(file_name):
-    with file(file_name) as fh:
-        mapping = generate_mapping(fh)
-        print dumps(mapping, indent=2)
-
-if __name__ == '__main__':
-    import sys
-    file_name = sys.argv[1]
-    dump_mapping(file_name)

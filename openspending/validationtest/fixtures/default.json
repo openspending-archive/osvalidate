@@ -9,7 +9,7 @@
     "territories": ["DE", "FR", "ES"],
     "ckan_uri": "urn:/dev/null"
   },
-  "mapping": {
+  "dimensions": {
     "amount": {
       "type": "measure",
       "label": "Amount",

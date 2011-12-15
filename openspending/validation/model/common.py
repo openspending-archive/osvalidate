@@ -9,15 +9,15 @@ class ValidationState(object):
         self.model = model
 
     @property
-    def mapping_items(self):
-        return self.model.get('mapping', {}).items()
+    def dimensions_items(self):
+        return self.model.get('dimensions', {}).items()
 
     @property
     def attributes(self):
         """ Return all attributes (including measures, atteribute 
         dimensions and compound dimension attributes) of the model. 
         """
-        for prop, meta in self.mapping_items:
+        for prop, meta in self.dimensions_items:
             yield prop
             for attribute in meta.get('attributes', {}).keys():
                 yield prop + '.' + attribute
@@ -25,13 +25,13 @@ class ValidationState(object):
     @property
     def dimensions(self):
         """ Return all dimensions of the mapping. """
-        for prop, meta in self.mapping_items:
+        for prop, meta in self.dimensions_items:
             if meta['type'].lower() == 'measure':
                 continue
             yield prop
 
     def dimension_attributes(self, dimension):
-        return self.model['mapping'][dimension].get('attributes', {}).keys()
+        return self.model['dimensions'][dimension].get('attributes', {}).keys()
 
 
 def _node(schema, name, *children, **kw):
