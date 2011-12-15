@@ -9,56 +9,49 @@
     "territories": ["DE", "FR", "ES"],
     "ckan_uri": "urn:/dev/null"
   },
-  "dimensions": {
+  "mapping": {
     "amount": {
       "type": "measure",
       "label": "Amount",
-      "datatype": "float"
+      "datatype": "float",
+      "column": "AMOUNT"
     },
     "cofinance": {
       "type": "measure",
       "label": "Co-Financed Amount",
-      "datatype": "float"
+      "datatype": "float",
+      "column": "COFIN"
     },
     "time": {
       "type": "date",
       "label": "Time of transaction",
-      "datatype": "date"
+      "datatype": "date",
+      "column": "YEAR"
     },
     "transaction_id": {
       "type": "value",
       "label": "Transaction ID",
-      "datatype": "id"
+      "datatype": "id",
+      "column": "TX"
     },
     "function": {
       "type": "compound",
       "key": true,
       "label": "Function", 
       "attributes": {
-        "name": {"datatype": "id"},
-        "label": {"datatype": "string"},
-        "description": {"datatype": "string"}
+        "name": {"datatype": "id", "column": "FUNCTION_ID"},
+        "label": {"datatype": "string", "column": "FUNCTION"},
+        "description": {"datatype": "string", "column": "FUNCTION_DESC"}
       }
     },
     "supplier": {
       "type": "compound",
       "label": "Supplier", 
       "attributes": {
-        "name": {"datatype": "id"},
-        "label": {"datatype": "string"}
+        "name": {"datatype": "id", "column": "SUPPLIER_ID"},
+        "label": {"datatype": "string", "column": "SUPPLIER"}
       }
     }
-  },
-  "mapping": {
-    "supplier.name": {"column": "SUPPLIER_ID"},
-    "supplier.label": {"column": "SUPPLIER"},
-    "function.name": {"column": "FUNCTION_ID"},
-    "function.label": {"column": "FUNCTION"},
-    "function.description": {"column": "FUNCTION_DESC"},
-    "transaction_id": {"column": "TX_ID"},
-    "time": {"column": "YEAR"},
-    "cofinance": {"column": "COFIN"},
-    "amount": {"column": "AMOUNT"}
   },
   "views": [
     {
@@ -83,3 +76,4 @@
     }
   ]
 }
+

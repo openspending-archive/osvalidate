@@ -83,11 +83,30 @@ def m2011_12_07_attributes_dictionary(model):
         model['mapping'][name] = meta
     return model
 
+def m2011_12_15_mapping_split(model):
+    if not 'dimensions' in model:
+        model['dimensions'] = model.get('mapping')
+        model['mapping'] = {}
+    for name, meta in model.get('dimensions', {}).items():
+        if 'attributes' in meta:
+            for aname, ameta in meta.get('attributes').items():
+                if 'column' in ameta:
+                    _name = name + '.' + aname
+                    model['mapping'][_name] = {'column': ameta['column']}
+                    del ameta['column']
+                meta['attributes'][aname] = ameta
+        else:
+            if 'column' in meta:
+                model['mapping'][name] = {'column': meta['column']}
+                del meta['column']
+        model['dimensions'][name] = meta
+    return model
 
 MIGRATIONS = {
     '2011-11-20': m2011_11_20_require_name_attribute,
     '2011-11-21': m2011_11_21_normalize_types,
     '2011-11-22': m2011_11_22_unique_keys,
     '2011-12-07': m2011_12_07_attributes_dictionary,
+    '2011-12-15': m2011_12_15_mapping_split
     }
 

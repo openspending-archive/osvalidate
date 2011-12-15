@@ -6,7 +6,8 @@ from openspending.validation.model.migration import \
     m2011_11_20_require_name_attribute, \
     m2011_11_21_normalize_types, \
     m2011_11_22_unique_keys, \
-    m2011_12_07_attributes_dictionary
+    m2011_12_07_attributes_dictionary, \
+    m2011_12_15_mapping_split
 
 
 class TestMigration(TestCase):
@@ -46,4 +47,11 @@ class TestMigration(TestCase):
         assert 'datatype' in out['mapping']['function']['attributes']['name']
         assert 'id'==out['mapping']['function']['attributes']['name']['datatype']
 
+    def test_2011_12_15_mapping_split(self):
+        model = h.model_fixture('2011_12_15_mapping_split')
+        out =  m2011_12_15_mapping_split(model)
+        assert 'dimensions' in out
+        assert 'mapping' in out
+        assert len(out['mapping'])==9
+        assert len(out['dimensions'])==6
 
