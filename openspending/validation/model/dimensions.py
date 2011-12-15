@@ -128,9 +128,6 @@ def property_schema(name, state):
 
 def measure_schema(name, state):
     schema = property_schema(name, state)
-    schema.add(key('column', validator=chained(
-            nonempty_string,
-        )))
     schema.add(key('datatype', validator=chained(
             nonempty_string,
             specific_datatype('float')
@@ -139,9 +136,6 @@ def measure_schema(name, state):
 
 def attribute_dimension_schema(name, state):
     schema = property_schema(name, state)
-    schema.add(key('column', validator=chained(
-            nonempty_string,
-        )))
     schema.add(key('datatype', validator=chained(
             nonempty_string,
             valid_datatype,
@@ -150,9 +144,6 @@ def attribute_dimension_schema(name, state):
 
 def date_schema(name, state):
     schema = property_schema(name, state)
-    schema.add(key('column', validator=chained(
-            nonempty_string,
-        )))
     schema.add(key('format', missing=None))
     schema.add(key('datatype', validator=chained(
             nonempty_string,
@@ -166,9 +157,6 @@ def dimension_attribute_schema(name, state):
         name_wrap(reserved_name, name),
         name_wrap(database_name, name),
         ))
-    schema.add(key('column', validator=chained(
-            nonempty_string,
-        )))
     schema.add(key('datatype', validator=chained(
             nonempty_string,
             valid_datatype

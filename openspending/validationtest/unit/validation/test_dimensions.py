@@ -80,13 +80,6 @@ class TestDimensions(TestCase):
         schema.deserialize(ms)
     
     @h.raises(Invalid)
-    def test_measure_has_column(self):
-        ms = self.model['dimensions'].copy()
-        del ms['cofinance']['column']
-        schema = dimensions_schema(self.state)
-        schema.deserialize(ms)
-    
-    @h.raises(Invalid)
     def test_measure_data_type(self):
         ms = self.model['dimensions'].copy()
         ms['cofinance']['datatype'] = 'id'
@@ -94,23 +87,9 @@ class TestDimensions(TestCase):
         schema.deserialize(ms)
     
     @h.raises(Invalid)
-    def test_date_has_column(self):
-        ms = self.model['dimensions'].copy()
-        del ms['time']['column']
-        schema = dimensions_schema(self.state)
-        schema.deserialize(ms)
-    
-    @h.raises(Invalid)
     def test_date_data_type(self):
         ms = self.model['dimensions'].copy()
         ms['time']['datatype'] = 'id'
-        schema = dimensions_schema(self.state)
-        schema.deserialize(ms)
-    
-    @h.raises(Invalid)
-    def test_attribute_has_column(self):
-        ms = self.model['dimensions'].copy()
-        del ms['transaction_id']['column']
         schema = dimensions_schema(self.state)
         schema.deserialize(ms)
     
@@ -148,13 +127,6 @@ class TestDimensions(TestCase):
         ms = self.model['dimensions'].copy()
         ms['function']['attributes']['ba nanana'] = ms['function']['attributes']['description']
         del ms['function']['attributes']['description']
-        schema = dimensions_schema(self.state)
-        schema.deserialize(ms)
-    
-    @h.raises(Invalid)
-    def test_compound_field_has_column(self):
-        ms = self.model['dimensions'].copy()
-        del ms['function']['attributes']['description']['column']
         schema = dimensions_schema(self.state)
         schema.deserialize(ms)
     

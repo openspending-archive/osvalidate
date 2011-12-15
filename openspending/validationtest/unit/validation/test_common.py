@@ -8,7 +8,7 @@ class TestValidationState(TestCase):
 
     def test_list_attributes(self):
         attributes = list(self.state.attributes)
-        assert len(attributes)==11, attributes
+        assert len(attributes)==9, attributes
         assert 'amount' in attributes, attributes
         assert 'function.label' in attributes, attributes
         assert not 'foo' in attributes, attributes

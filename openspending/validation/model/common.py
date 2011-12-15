@@ -18,7 +18,8 @@ class ValidationState(object):
         dimensions and compound dimension attributes) of the model. 
         """
         for prop, meta in self.dimensions_items:
-            yield prop
+            if not 'attributes' in meta:
+                yield prop
             for attribute in meta.get('attributes', {}).keys():
                 yield prop + '.' + attribute
 
