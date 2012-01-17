@@ -22,9 +22,7 @@ setup(
     include_package_data=True,
     package_data={
         },
-    namespace_packages = ['openspending', 'openspending.validation',
-       'openspending.validationtest', 'openspending.validationcli',
-       'openspending.reference'],
+    namespace_packages = ['openspending'],
     test_suite='nose.collector',
     zip_safe=False,
     entry_points={
