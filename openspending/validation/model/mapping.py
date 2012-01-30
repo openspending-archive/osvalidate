@@ -28,6 +28,15 @@ def name_wrap(check, name):
         return check(name)
     return _check
 
+def no_entry_namespace_overlap(name):
+    """ Check if the dimension name begins with "entry_" and would
+    therefore overlap with the names of fields in query results.
+    """
+    if name.startswith("entry_"):
+        return "Dimension names cannot start with entry_ to " \
+               "avoid naming conflicts."
+    return True
+
 def no_dimension_id_overlap(name, state):
     """ There cannot both be a dimension of name ``foo`` and 
     a dimension named ``foo_id`` because that may be used as 
@@ -116,6 +125,7 @@ def property_schema(name, state):
         name_wrap(nonempty_string, name),
         name_wrap(reserved_name, name),
         name_wrap(database_name, name),
+        name_wrap(no_entry_namespace_overlap, name),
         no_dimension_id_overlap(name, state)
         ))
     schema.add(key('label', validator=chained(

@@ -80,6 +80,16 @@ class TestMapping(TestCase):
         schema.deserialize(ms)
     
     @h.raises(Invalid)
+    def test_entry_overlap(self):
+        ms = self.model['mapping'].copy()
+        ms['entry_id'] = ms['function']
+        model = self.model.copy()
+        model['mapping'] = ms
+        state = ValidationState(model)
+        schema = mapping_schema(state)
+        schema.deserialize(ms)
+    
+    @h.raises(Invalid)
     def test_measure_has_column(self):
         ms = self.model['mapping'].copy()
         del ms['cofinance']['column']
