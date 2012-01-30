@@ -143,7 +143,6 @@ def convert_types(dimensions, mapping, row):
 
     for dimension, meta in dimensions.items():
         meta['dimension'] = dimension
-
         # handle CompoundDimensions.
         # this is clever, but possibly not always true.
         if 'attributes' in meta:
@@ -159,9 +158,9 @@ def convert_types(dimensions, mapping, row):
                     errors.add(i)
         # handle AttributeDimensions, Measures and DateDimensions.
         else:
-            mapping = mapping[dimension]
+            _mapping = mapping[dimension]
             try:
-                out[dimension] = _cast(row, mapping, meta, dimension)
+                out[dimension] = _cast(row, _mapping, meta, dimension)
             except Invalid, i:
                 errors.add(i)
 
