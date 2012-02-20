@@ -85,6 +85,19 @@ def require_amount_dimension(mapping):
                 "(i.e. 'float') to be a valid measure."
     return True
 
+def must_be_compound_dimension(dimension):
+    """ 'to' and 'from' must be compound dimensions, all other types
+    will fail. """
+    illegal = ('date', 'measure', 'attribute', 'value')
+    def check(mapping):
+        if not dimension in mapping:
+            return True
+        if mapping.get(dimension, {}).get('type') in illegal:
+            return "'%s' must be a compound dimension if " \
+                "it exists."
+        return True
+    return check
+
 def compound_attribute_name_is_id_type(attributes):
     """ Whenever a compound dimension has a name attribute, this
     attribute must be munged, i.e. be of type 'id'. """
@@ -205,7 +218,9 @@ def mapping_schema(state):
     schema = mapping('mapping', validator=chained(
         require_time_dimension,
         require_amount_dimension,
-        require_one_key_column
+        require_one_key_column,
+        must_be_compound_dimension('to'),
+        must_be_compound_dimension('from')
         ))
     for name, meta in state.mapping_items:
         type_schema = {

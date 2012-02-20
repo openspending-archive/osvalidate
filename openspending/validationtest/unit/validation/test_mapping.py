@@ -21,6 +21,20 @@ class TestMapping(TestCase):
             assert False, i.asdict()
     
     @h.raises(Invalid)
+    def test_from_is_compound(self):
+        ms = self.model['mapping']
+        ms['from'] = ms['cofinance']
+        schema = mapping_schema(self.state)
+        schema.deserialize(ms)
+    
+    @h.raises(Invalid)
+    def test_to_is_compound(self):
+        ms = self.model['mapping']
+        ms['to'] = ms['transaction_id']
+        schema = mapping_schema(self.state)
+        schema.deserialize(ms)
+    
+    @h.raises(Invalid)
     def test_invalid_name(self):
         ms = self.model['mapping']
         ms['ba nana'] = ms['function']
