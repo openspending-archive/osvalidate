@@ -6,8 +6,8 @@ from ... import TestCase, helpers as h
 
 class TestCurrency(TestCase):
     def test_currency_constant(self):
-        h.assert_equal(currency.CURRENCIES['EUR'], 'Euro')
-        h.assert_equal(currency.CURRENCIES['USD'], 'US Dollar')
+        h.assert_equal(currency.CURRENCIES['EUR'], ('Euro', True))
+        h.assert_equal(currency.CURRENCIES['USD'], ('US Dollar', True))
 
     def test_currency_type_raises_invalid(self):
         assert valid_currency('not-a-code') is not True
