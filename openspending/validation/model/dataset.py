@@ -14,20 +14,24 @@ def no_double_underscore(name):
         return "Double underscores are not allowed in dataset names."
     return True
 
+
 def valid_currency(code):
     if code.upper() not in CURRENCIES:
         return "%s is not a valid currency code." % code
     return True
+
 
 def valid_language(code):
     if code.lower() not in LANGUAGES:
         return "%s is not a valid language code." % code
     return True
 
+
 def valid_country(code):
     if code.upper() not in COUNTRIES:
         return "%s is not a valid country code." % code
     return True
+
 
 def dataset_schema(state):
     schema = mapping('dataset')
@@ -54,5 +58,3 @@ def dataset_schema(state):
         missing=[]))
     schema.add(key('ckan_uri', missing=None))
     return schema
-
-

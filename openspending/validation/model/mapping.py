@@ -1,15 +1,17 @@
-from openspending.validation.model.common import mapping, sequence
+from openspending.validation.model.common import mapping
 from openspending.validation.model.common import key
 from openspending.validation.model.predicates import chained, \
         reserved_name, database_name, nonempty_string
 
-DATATYPES = ['id', 'string', 'float', 'constant', 'date']
+DATATYPES = ['id', 'string', 'float', 'constant', 'date', 'url']
+
 
 def valid_datatype(value):
     """ Check that the datatype is known and supported. """
     if not value in DATATYPES:
         return "'%s' is an unrecognized data type" % value
     return True
+
 
 def specific_datatype(type_):
     """ Date dimensions and measures require data of a 
@@ -21,12 +23,14 @@ def specific_datatype(type_):
         return True
     return _check
 
+
 def name_wrap(check, name):
     """ Apply a validator to the name variable, not any of 
     the actual mapping data. """
     def _check(value):
         return check(name)
     return _check
+
 
 def no_entry_namespace_overlap(name):
     """ Check if the dimension name begins with "entry_" and would
@@ -36,6 +40,7 @@ def no_entry_namespace_overlap(name):
         return "Dimension names cannot start with entry_ to " \
                "avoid naming conflicts."
     return True
+
 
 def no_dimension_id_overlap(name, state):
     """ There cannot both be a dimension of name ``foo`` and 
@@ -50,6 +55,7 @@ def no_dimension_id_overlap(name, state):
         return True
     return _check
 
+
 def require_one_key_column(mapping):
     """ At least one dimension needs to be marked as a ``key``
     to be used to generate unique entry identifiers. """
@@ -59,6 +65,7 @@ def require_one_key_column(mapping):
     return "At least one dimension needs to be marked as a 'key' " \
         "which can be used to uniquely identify entries in this " \
         "dataset."
+
 
 def require_time_dimension(mapping):
     """ Each mapping needs to have a time dimension. """
@@ -73,6 +80,7 @@ def require_time_dimension(mapping):
                 "dimension."
     return True
 
+
 def require_amount_dimension(mapping):
     """ Each mapping needs to have a amount dimension. """
     if 'amount' not in mapping.keys():
@@ -85,10 +93,12 @@ def require_amount_dimension(mapping):
                 "(i.e. 'float') to be a valid measure."
     return True
 
+
 def must_be_compound_dimension(dimension):
     """ 'to' and 'from' must be compound dimensions, all other types
     will fail. """
     illegal = ('date', 'measure', 'attribute', 'value')
+
     def check(mapping):
         if not dimension in mapping:
             return True
@@ -98,6 +108,7 @@ def must_be_compound_dimension(dimension):
         return True
     return check
 
+
 def compound_attribute_name_is_id_type(attributes):
     """ Whenever a compound dimension has a name attribute, this
     attribute must be munged, i.e. be of type 'id'. """
@@ -105,6 +116,7 @@ def compound_attribute_name_is_id_type(attributes):
         return "'name' attributes on dimensions must be of the " \
                 "data type 'id' so they can be used in URLs"
     return True
+
 
 def compound_attribute_label_is_string_type(attributes):
     """ Whenever a compound dimension has a label attribute, this
@@ -115,6 +127,7 @@ def compound_attribute_label_is_string_type(attributes):
                 "data type 'string' so they can be used in the UI."
     return True
 
+
 def compound_attributes_include_name(attributes):
     """ Each compound dimension must have a 'name' attribute. """
     if not 'name' in attributes:
@@ -123,6 +136,7 @@ def compound_attributes_include_name(attributes):
                 "'name' attribute must be of data type 'id'."
     return True
 
+
 def compound_attributes_include_label(attributes):
     """ Each compound dimension must have a 'label' attribute. """
     if not 'label' in attributes:
@@ -130,6 +144,7 @@ def compound_attributes_include_label(attributes):
                 "that will be used to describe them in the " \
                 "interface. The label must be a 'string'."
     return True
+
 
 def property_schema(name, state):
     """ This is validation which is common to all properties,
@@ -149,6 +164,7 @@ def property_schema(name, state):
         ), missing=None))
     return schema
 
+
 def measure_schema(name, state):
     schema = property_schema(name, state)
     schema.add(key('column', validator=chained(
@@ -159,6 +175,7 @@ def measure_schema(name, state):
             specific_datatype('float')
         )))
     return schema
+
 
 def attribute_dimension_schema(name, state):
     schema = property_schema(name, state)
@@ -171,6 +188,7 @@ def attribute_dimension_schema(name, state):
         )))
     return schema
 
+
 def date_schema(name, state):
     schema = property_schema(name, state)
     schema.add(key('column', validator=chained(
@@ -182,6 +200,7 @@ def date_schema(name, state):
             specific_datatype('date')
         )))
     return schema
+
 
 def dimension_attribute_schema(name, state):
     schema = mapping(name, validator=chained(
@@ -197,6 +216,7 @@ def dimension_attribute_schema(name, state):
             valid_datatype
         )))
     return schema
+
 
 def compound_dimension_schema(name, state):
     schema = property_schema(name, state)
@@ -214,6 +234,7 @@ def compound_dimension_schema(name, state):
 
     return schema
 
+
 def mapping_schema(state):
     schema = mapping('mapping', validator=chained(
         require_time_dimension,
@@ -228,7 +249,7 @@ def mapping_schema(state):
             'value': attribute_dimension_schema,
             'attribute': attribute_dimension_schema,
             'date': date_schema,
-            }.get(meta.get('type'), 
+            }.get(meta.get('type'),
                   compound_dimension_schema)
         schema.add(type_schema(name, state))
     return schema
