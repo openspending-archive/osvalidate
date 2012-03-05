@@ -11,8 +11,7 @@ setup(
     install_requires=[
         "iso8601",
         "colander==0.9.3",
-        "Unidecode==0.04.9",
-        "messytables==0.2.0"
+        "Unidecode==0.04.9"
     ],
     setup_requires=[
         "nose==1.1.2"
