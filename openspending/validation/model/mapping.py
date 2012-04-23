@@ -159,6 +159,9 @@ def property_schema(name, state):
     schema.add(key('label', validator=chained(
             nonempty_string,
         )))
+    schema.add(key('type', validator=chained(
+            nonempty_string,
+        )))
     schema.add(key('description', validator=chained(
             nonempty_string,
         ), missing=None))

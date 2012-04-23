@@ -26,7 +26,7 @@ class ValidationState(object):
     def dimensions(self):
         """ Return all dimensions of the mapping. """
         for prop, meta in self.mapping_items:
-            if meta['type'].lower() == 'measure':
+            if meta.get('type', '').lower() == 'measure':
                 continue
             yield prop
 
