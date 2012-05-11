@@ -40,7 +40,8 @@ def dataset_schema(state):
             reserved_name,
             database_name,
             no_double_underscore
-        )))
+        ),
+        preparer=lambda x: x.lower().strip() if x else None))
     schema.add(key('currency', validator=chained(
             valid_currency
         )))
@@ -56,5 +57,4 @@ def dataset_schema(state):
     schema.add(sequence('territories',
         key('territory', validator=valid_country), 
         missing=[]))
-    schema.add(key('ckan_uri', missing=None))
     return schema
