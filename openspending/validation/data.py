@@ -90,7 +90,7 @@ class FloatAttributeType(AttributeType):
     """ Accept floating point values with commas as thousands
     delimiters (anglo-saxon style). """
 
-    RE = re.compile(r'^[0-9-\,]*(\.[0-9Ee+]*)?$')
+    RE = re.compile(r'^[0-9-\,]*(\.[0-9]*[Ee]?\+?[0-9]*)?$')
 
     def cast(self, row, meta):
         value = self._column_or_default(row, meta)
