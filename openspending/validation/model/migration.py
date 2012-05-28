@@ -89,7 +89,8 @@ def m2011_12_07_attributes_dictionary(model):
 
 
 def m2012_05_29_add_category(model):
-    model['dataset']['category'] = 'other'
+    if not model['dataset'].get('category'):
+        model['dataset']['category'] = 'other'
     return model
 
 
