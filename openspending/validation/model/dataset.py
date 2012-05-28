@@ -5,6 +5,7 @@ from openspending.validation.model.predicates import chained, \
 from openspending.reference.currency import CURRENCIES
 from openspending.reference.language import LANGUAGES
 from openspending.reference.country import COUNTRIES
+from openspending.reference.category import CATEGORIES
 
 
 def no_double_underscore(name):
@@ -18,6 +19,12 @@ def no_double_underscore(name):
 def valid_currency(code):
     if code.upper() not in CURRENCIES:
         return "%s is not a valid currency code." % code
+    return True
+
+
+def valid_category(cat):
+    if cat.lower() not in CATEGORIES:
+        return "%s is not a valid category." % cat
     return True
 
 
@@ -44,6 +51,9 @@ def dataset_schema(state):
         preparer=lambda x: x.lower().strip() if x else None))
     schema.add(key('currency', validator=chained(
             valid_currency
+        )))
+    schema.add(key('category', validator=chained(
+            valid_category
         )))
     schema.add(key('label', validator=chained(
             nonempty_string,

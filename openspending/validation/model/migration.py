@@ -1,6 +1,7 @@
 
 SCHEMA_FIELD = 'schema_version'
 
+
 def migrate_model(model):
     version = model.get('dataset', {}).get(SCHEMA_FIELD, '1970-01-01')
     for k, func in sorted(MIGRATIONS.items()):
@@ -36,6 +37,7 @@ def m2011_11_20_require_name_attribute(model):
         model['mapping'][name] = meta
     return model
 
+
 def m2011_11_21_normalize_types(model):
     def _tf(name, meta, type_):
         if type_ in ['measure', 'date']:
@@ -60,6 +62,7 @@ def m2011_11_21_normalize_types(model):
         model['mapping'][name] = _tf(name, meta, type_)
     return model
 
+
 def m2011_11_22_unique_keys(model):
     if 'unique_keys' in model.get('dataset', {}):
         for key in model['dataset']['unique_keys']:
@@ -69,12 +72,13 @@ def m2011_11_22_unique_keys(model):
         del model['dataset']['unique_keys']
     return model
 
+
 def m2011_12_07_attributes_dictionary(model):
     for name, meta in model.get('mapping', {}).items():
         if ('attributes' not in meta) and ('fields' in meta):
             meta['attributes'] = {}
             for field in meta.get('fields', []):
-                if 'name' not in field: 
+                if 'name' not in field:
                     continue
                 name_ = field['name']
                 del field['name']
@@ -84,10 +88,15 @@ def m2011_12_07_attributes_dictionary(model):
     return model
 
 
+def m2012_05_29_add_category(model):
+    model['dataset']['category'] = 'other'
+    return model
+
+
 MIGRATIONS = {
     '2011-11-20': m2011_11_20_require_name_attribute,
     '2011-11-21': m2011_11_21_normalize_types,
     '2011-11-22': m2011_11_22_unique_keys,
     '2011-12-07': m2011_12_07_attributes_dictionary,
+    '2012-05-29': m2012_05_29_add_category,
     }
-

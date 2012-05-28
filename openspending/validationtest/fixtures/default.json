@@ -4,6 +4,7 @@
     "label": "Test Dataset", 
     "description": "This is a test dataset",
     "currency": "EUR",
+    "category": "other",
     "schema_version": "2011-12-07",
     "languages": ["en"],
     "territories": ["DE", "FR", "ES"],

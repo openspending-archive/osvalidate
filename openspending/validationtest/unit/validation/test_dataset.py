@@ -42,6 +42,13 @@ class TestDataset(TestCase):
         schema.deserialize(ds)
     
     @h.raises(Invalid)
+    def test_invalid_category(self):
+        ds = self.model['dataset'].copy()
+        ds['category'] = 'giraffes'
+        schema = dataset_schema(self.state)
+        schema.deserialize(ds)
+
+    @h.raises(Invalid)
     def test_invalid_language(self):
         ds = self.model['dataset'].copy()
         ds['languages'].append('esperanto')
