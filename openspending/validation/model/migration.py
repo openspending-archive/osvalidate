@@ -3,7 +3,8 @@ SCHEMA_FIELD = 'schema_version'
 
 
 def migrate_model(model):
-    version = model.get('dataset', {}).get(SCHEMA_FIELD, '1970-01-01')
+    model['dataset'] = model.get('dataset', {})
+    version = model['dataset'].get(SCHEMA_FIELD, '1970-01-01')
     for k, func in sorted(MIGRATIONS.items()):
         if k > version:
             model = func(model)
