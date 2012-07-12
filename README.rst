@@ -60,7 +60,7 @@ Installation
 
 Installation is as a conventional Python tool::
 
-  virtualenv --no-site-packages pyenv
+  virtualenv pyenv
 
   . pyenv/bin/activate
 
@@ -95,6 +95,6 @@ Contact
 -------
 
 * E-Mail: info@openspending.org
-* Issues: https://github.com/okfn/openspending/issues
+* Issues: https://github.com/openspending/openspending/issues
 
 
