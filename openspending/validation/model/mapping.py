@@ -104,7 +104,7 @@ def must_be_compound_dimension(dimension):
             return True
         if mapping.get(dimension, {}).get('type') in illegal:
             return "'%s' must be a compound dimension if " \
-                "it exists."
+                "it exists." % dimension
         return True
     return check
 
